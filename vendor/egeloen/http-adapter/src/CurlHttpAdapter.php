@@ -123,7 +123,8 @@ class CurlHttpAdapter extends AbstractCurlHttpAdapter
         curl_setopt($curl, CURLOPT_HEADER, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->prepareHeaders($internalRequest, false, false));
-		curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);		
+        # force ipv4 because of dns-issues
+        curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);		
 
         $this->configureTimeout($curl, 'CURLOPT_TIMEOUT');
         $this->configureTimeout($curl, 'CURLOPT_CONNECTTIMEOUT');
