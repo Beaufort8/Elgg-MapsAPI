@@ -81,9 +81,31 @@ define(function (require) {
         $(this).prop('value', 'Searching...');
         $(this).css("opacity", 0.7);
         
-        // Spiderfier feature
-        var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true});
-        
+        // Spiderfier feature 
+        var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true, legWeight: 5});
+
+/* mod */
+		oms.addListener('spiderfy', function(spidered, unspidered) {
+			console.log('spiderfy');
+			for (var i = 0; i < spidered.length; i++) {
+				spidered[i].setLabel("");
+				spidered[i].setOptions({
+					zIndex: i,
+				});
+			}
+		});
+
+		oms.addListener('unspiderfy', function(spidered, unspidered) {
+			console.log('unspiderfy');
+			for (var i = 0; i < spidered.length; i++) {
+				spidered[i].setLabel("" + (i + 1));
+				spidered[i].setOptions({
+					zIndex: i
+				});
+			}
+		});
+/* mod */
+           
         var s_location = $('#autocomplete').val();
         var s_radius = $('#s_radius').val();
         var s_keyword = $('#s_keyword').val();
@@ -159,7 +181,17 @@ define(function (require) {
                             markerBounds.extend(myLatlng);
 
                             oms.addMarker(marker);  // Spiderfier feature
+/* mod */
+				console.log('set nearby markers');
+				var markersNear = oms.markersNearMarker(marker, false);
+				marker.setLabel("" + (markersNear.length + 1));
+				marker.setOptions({
+					zIndex: markersNear.length
+				});
+/* /mod */
+
                             markers.push(marker);     
+
                             //console.log('aa'+showradius+' - '+result.s_radius);
                             if (showradius && result.s_radius_no > 0) {
                                 circle = new google.maps.Circle({
@@ -189,9 +221,19 @@ define(function (require) {
                             google.maps.event.addListener(marker, 'click', function() {
                                 infowindow.setContent('<div class="infowindow">'+value.info_window+'</div>');
                                 infowindow.open(map, this);
-                            });  
+                            });
+ 
                             
                             oms.addMarker(marker);  // Spiderfier feature
+/* mod */
+							console.log('set initial nearby markers 2');
+
+							var markersNear = oms.markersNearMarker(marker, false);
+							marker.setLabel("" + (markersNear.length + 1));
+							marker.setOptions({
+								zIndex: markersNear.length
+							});
+/* /mod */
                             markers.push(marker);
 
                             if (!showradius)    {
@@ -200,7 +242,51 @@ define(function (require) {
                             }   
                             
                         });  
-                        
+
+ /* mod */
+
+						google.maps.event.addListener(map,'zoom_changed', function() {
+							/* redraw the labels */
+							console.log('redraw labels');
+							
+							setTimeout(resetClusters, 2000);							
+							
+						});
+
+ 
+function resetClusters() {
+    
+    // clear all lables
+    var markers = oms.getMarkers();
+    $.each(markers,function (i, marker){
+    	marker.setLabel("");
+    });
+    
+    var markers = oms.markersNearAnyOtherMarker();
+
+	var ii = 0;
+
+    $.each(markers, function (i, marker) {
+        google.maps.event.trigger(markers[i], 'click');
+        ii++;
+    });
+    
+    // close last
+    if(ii){
+    	console.log('close last, unspiderfy');
+    	infowindow.close(map, markers[(ii-1)]);
+    	oms.unspiderfy();
+    }
+    
+    
+    // oms.unspiderfy();
+}
+
+
+ 
+ /* /mod */
+
+                         
                         if (map_settings['cluster']) {
                             mcOptions = {
                                 styles: [

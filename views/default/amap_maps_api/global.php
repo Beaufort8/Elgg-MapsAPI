@@ -72,7 +72,20 @@ foreach ($layers as $l) {
 				
 		//////////////////// Spiderfier feature start ////////////////////
 		//var iw = new gm.InfoWindow(); //OBS
-		var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true});
+		var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true, legWeight: 3});
+
+/* mod */
+oms.addListener('unspiderfy', function(spidered, unspidered) {
+		console.log('global unspiderfy');
+      for (var i = 0; i < spidered.length; i++) {
+        spidered[i].setLabel("" + (i + 1));
+        spidered[i].setOptions({
+          zIndex: i
+        });
+      }
+    });
+/* /mod */
+
 		//////////////////// Spiderfier feature end ////////////////////
 		
 		$('#chbx_user').click(function() {
@@ -170,7 +183,16 @@ foreach ($layers as $l) {
 				  infowindow.setContent('<?php echo '<div class="infowindow">'.$entity_img.' '.$entity_title.'<br/>'.$entity_location.'<br/>'.$entity_description.'</div>';?>');
 				  infowindow.open(map, this);
 				});  
+
 				oms.addMarker(marker);  // Spiderfier feature
+
+/* mod */				
+				var markersNear = oms.markersNearMarker(marker, false);
+				marker.setLabel("" + (markersNear.length + 1));
+				marker.setOptions({
+					zIndex: markersNear.length
+				});
+				
 				//markers.push(marker);
 				 
 				<?php if (elgg_instanceof($u, 'user')) {?> markers_user.push(marker); <?php } ?>
