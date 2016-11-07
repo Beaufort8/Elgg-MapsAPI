@@ -24,15 +24,39 @@ if (isset($vars['my_location'])) {
     $output .= '<label class="mtm float-alt">'.elgg_view('input/checkbox', array('name' => 'my_location', 'value' => 'show', 'id' => 'my_location')).elgg_echo("amap_maps_api:search:my_location").'</label>';
 }
 $output .= '</div>';
-$output .= '<div class="nsf_element nsf_small">';
-$output .= elgg_view('input/text', array(
+
+// radius
+/*
+<input
+    type="range"
+    min="10"                    // default 0
+    max="1000"                  // default 100
+    step="10"                   // default 1
+    value="300"                 // default min + (max-min)/2
+    data-orientation="vertical" // default horizontal
+>
+*/
+$output .= '<div class="nsf_element nsf_medium">';
+
+$output .= '<div style="display:inline-block;width:200px;">';
+$output .= elgg_view('input/range', array(
 	'name' => 's_radius', 
-	'placeholder' => amap_ma_get_unit_of_measurement_string(AMAP_MA_PLUGIN_ID),	
+	// 'placeholder' => amap_ma_get_unit_of_measurement_string(AMAP_MA_PLUGIN_ID),	
 	'id' => 's_radius', 
-	'class' => 'elgg-input-text txt_small', 
+	'class' => 'elgg-input-range', 
 	'value' => (isset($vars['initial_radius'])?$vars['initial_radius']:''),
+    'min'=>'50',
+    'max'=>'500',
+    'step'=>'50',
+    'data-orientation'=>'horizontal'
 ));
-$output .= '<label class="mtm float-alt">'.elgg_view('input/checkbox', array('name' => 'showradius', 'value' => 'show', 'id' => 'showradius')).elgg_echo("amap_maps_api:search:showradius").'</label>';
+$output .= '</div>';
+
+$output .= '<label class="mtm float-alt" style="margin-top:20px">';
+$output .= elgg_view('input/checkbox', array('name' => 'showradius', 'value' => 'show', 'id' => 'showradius'));
+$output .= 'Show search area: <span id="output"></span> km&nbsp';
+$output .= '</label>';
+
 $output .= '</div>';
 
 $output .= '<div class="nsf_element nsf_small">';

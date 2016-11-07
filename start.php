@@ -35,6 +35,12 @@ function amap_maps_api_init() {
     elgg_extend_view('css/elgg', 'amap_maps_api/css');
     elgg_extend_view('css/admin', 'amap_maps_api/css_admin');
 
+	// Register CSS
+        
+	elgg_register_css('rangeslidercss', '/mod/amap_maps_api/vendors/rangeslider/rangeslider.css');
+	elgg_load_css('rangeslidercss');
+
+
     // register extra js files
     $mapkey = trim(elgg_get_plugin_setting('google_api_key', AMAP_MA_PLUGIN_ID));
     elgg_define_js('amap_ma_googleapis_js', array(
@@ -65,6 +71,11 @@ function amap_maps_api_init() {
     elgg_define_js('amap_ma_latlon_picker', array(
         'deps' => array('jquery', 'amap_ma_googleapis_js'),
         'exports' => 'amap_ma_latlon_picker',
+    ));
+
+    elgg_define_js('rangeslider', array(
+        'deps' => array('jquery'),
+        'exports' => 'rangeslider',
     ));
     
     // register plugin settings view

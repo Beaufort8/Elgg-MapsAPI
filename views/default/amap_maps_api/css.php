@@ -178,3 +178,18 @@ input.gllpSearchButton	{
 	margin-right: 20px;
 }
 
+/* range slider */
+.rangeslider--horizontal {
+	top:5px;
+}
+
+.rangeslider--horizontal .rangeslider__handle {
+}
+.rangeslider__handle {
+	top: 0 !important;
+	width:20px !important;
+	height:20px !important;
+}
+.rangeslider__fill {
+	background: #55d11f !important;
+}

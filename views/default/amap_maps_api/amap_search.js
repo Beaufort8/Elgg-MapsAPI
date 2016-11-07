@@ -2,7 +2,8 @@ define(function (require) {
     var elgg = require('elgg');
     var $ = require('jquery');
     require("amap_ma_oms_js");
-    
+    require("rangeslider");
+     
     // Initialize map vars
     var map_settings = require("amap_maps_api/settings");
     var gm = google.maps;  
@@ -28,6 +29,35 @@ define(function (require) {
     });
 
     $(document).ready(function () {
+		// Initialize rangeSlider
+		var $element = $('input[type="range"]');
+		var $output = $('#output');
+
+		function updateOutput(el, val) {
+		  el.textContent = val;
+		}
+
+		$element
+		  .rangeslider({
+			polyfill: false,
+			onInit: function() {
+			  updateOutput($output[0], this.value);
+			}
+		  })
+		  .on('input', function() {
+			updateOutput($output[0], this.value);
+		  });
+
+		// enable submit with enter
+
+		$('form.elgg-form-amap-maps-api-nearby input').on('keyup',function (e) {
+			if (e.which == 13) {
+				e.preventDefault();
+				$("#nearby_btn").trigger('click');
+				return false;
+			}
+		});
+
         // Initialize map vars
         infowindow = new google.maps.InfoWindow();
         var myLatlng = new google.maps.LatLng(map_settings['d_location_lat'],map_settings['d_location_lon']);
