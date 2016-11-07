@@ -17,7 +17,7 @@ define('AMAP_MA_CUSTOM_DEFAULT_COORDS', '49.037868,14.941406'); // set coords of
 define('AMAP_MA_CUSTOM_DEFAULT_LOCATION', 'Europe'); // set default location in case default location is not set
 define('AMAP_MA_CUSTOM_DEFAULT_ZOOM', 12); // set default zoom in case is not set
 define('AMAP_MA_CUSTOM_CLUSTER_ZOOM', 7); // set cluster zoom that define when markers grouping ends
-define('AMAP_MA_DEFAULT_RADIUS', 500); // set the default search radius for personalized services in km
+define('AMAP_MA_DEFAULT_RADIUS', 100); // set the default search radius for personalized services in km
 define('AMAP_MA_DEFAULT_OSM_LAYER', 'http://tile.openstreetmap.org/'); // set the default OSM base layer
 define('AMAP_MA_GENERAL_YES', 'yes'); // general purpose string for yes
 define('AMAP_MA_GENERAL_NO', 'no'); // general purpose string for no
