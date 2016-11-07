@@ -82,7 +82,7 @@ define(function (require) {
         $(this).css("opacity", 0.7);
         
         // Spiderfier feature 
-        var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true, legWeight: 5});
+        var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true});
 		/* mod */
 		oms.addListener('spiderfy', function(spidered, unspidered) {
 			console.log('spiderfy');
