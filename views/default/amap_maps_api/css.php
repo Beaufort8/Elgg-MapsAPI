@@ -26,6 +26,7 @@ div.infowindow	{
 }
 
 /* labels */
+/*
 div#map>div.gm-style>div>div>div>div>div>div>div{
      color: red !important;
      background-color: white !important;
@@ -37,6 +38,7 @@ div#map>div.gm-style>div>div>div>div>div>div>div{
      border: 2px solid black !important;
      white-space: nowrap;
 }
+*/
 
 #map_side_entities {
     height: 590px;
