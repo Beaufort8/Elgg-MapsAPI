@@ -25,21 +25,6 @@ div.infowindow	{
     margin: 0 5px 5px 0;
 }
 
-/* labels */
-/*
-div#map>div.gm-style>div>div>div>div>div>div>div{
-     color: red !important;
-     background-color: white !important;
-     font-family: "Lucida Grande", "Arial", sans-serif !important;
-     font-size: 10px !important;
-     font-weight: bold !important;
-     text-align: center !important;
-     width: 40px !important;
-     border: 2px solid black !important;
-     white-space: nowrap;
-}
-*/
-
 #map_side_entities {
     height: 590px;
     float: left;
