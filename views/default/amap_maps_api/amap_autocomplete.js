@@ -6,7 +6,7 @@ define(function (require) {
     $(document).ready(function(){ 
         autocomplete = new google.maps.places.Autocomplete(
             /** @type {HTMLInputElement} */(document.getElementById('autocomplete')),
-            { types: ['geocode'] 
+            { types:  ['(cities)'] 
 		});
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 			
@@ -14,11 +14,13 @@ define(function (require) {
     });
     
 	// prevent form submitted when press enter to autocomplete
+	/*
 	$("#autocomplete").keydown(function(event){
 		if(event.keyCode == 13) {
 		  event.preventDefault();
 		  return false;
 		}
-	});    
+	});
+	*/   
 
 });
