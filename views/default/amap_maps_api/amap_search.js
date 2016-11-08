@@ -128,6 +128,7 @@ define(function (require) {
 				spidered[i].setOptions({
 					icon: elgg.normalize_url('/mod/amap_maps_api/graphics/members-plus.png')
 				});
+				console.log(spidered[i]);
 			}
 		});
 		/* /mod */   
