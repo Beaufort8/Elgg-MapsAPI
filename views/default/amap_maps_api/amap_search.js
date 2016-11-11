@@ -3,6 +3,10 @@ define(function (require) {
     var $ = require('jquery');
     require("amap_ma_oms_js");
     require("rangeslider");
+
+	// Initialize rangeSlider
+	var $element = $('input[type="range"]');
+	var $output = $('#output');
      
     // Initialize map vars
     var map_settings = require("amap_maps_api/settings");
@@ -27,11 +31,17 @@ define(function (require) {
             $('#autocomplete').val('');
         }
     });
+    
+    // store initial load for reset
+    var stril = $('#initial_load').val();
+    console.log('Initial Load '+stril);
+    // reset initial load to 'newest', if browser-history-back;
+    if(!stril){
+    	stril='newest';
+    	$('#initial_load').val(stril);
+    }
 
-    $(document).ready(function () {
-		// Initialize rangeSlider
-		var $element = $('input[type="range"]');
-		var $output = $('#output');
+    $(document).ready(function () {    	
 
 		function updateOutput(el, val) {
 		  el.textContent = val;
@@ -57,6 +67,26 @@ define(function (require) {
 				return false;
 			}
 		});
+		
+		// reset-button
+
+		$("#reset_btn").click(function(){
+
+			$('#autocomplete').val('');
+			$('#s_radius').val('');
+			$('#s_keyword').val('');
+			$('#initial_load').val(stril);
+			/*
+			var s_action = $('#s_action').val();
+			var noofusers = $('#noofusers').val();
+			var change_title = $('#change_title').val();
+			var group_guid = $('#group_guid').val();
+			var s_change_title = $('#s_change_title').val();
+			*/
+			$(this).hide();
+			$("#nearby_btn").trigger('click');
+
+		})
 
         // Initialize map vars
         infowindow = new google.maps.InfoWindow();
@@ -117,18 +147,21 @@ define(function (require) {
 		oms.addListener('spiderfy', function(spidered, unspidered) {
 			console.log('spiderfy');
 			for (var i = 0; i < spidered.length; i++) {
-				spidered[i].setOptions({
-					icon: elgg.normalize_url('/mod/membersmap/graphics/green.png')
-				});
+				if(spidered[i].title !== undefined){
+					spidered[i].setOptions({
+						icon: elgg.normalize_url('/mod/membersmap/graphics/green.png')
+					});
+				}
 			}
 		});
 		oms.addListener('unspiderfy', function(spidered, unspidered) {
 			console.log('unspiderfy');
 			for (var i = 0; i < spidered.length; i++) {
-				spidered[i].setOptions({
-					icon: elgg.normalize_url('/mod/amap_maps_api/graphics/members-plus.png')
-				});
-				console.log(spidered[i]);
+				if(spidered[i].title !== undefined){
+					spidered[i].setOptions({
+						icon: elgg.normalize_url('/mod/amap_maps_api/graphics/members-plus.png')
+					});
+				}
 			}
 		});
 		/* /mod */   
@@ -188,7 +221,11 @@ define(function (require) {
                         if (initial_load == 'location') {
                             $('#my_location').prop('checked', true);
                         }
- 
+ 						
+ 						if(initial_load==''){
+ 							$('#reset_btn').show();
+ 						}
+ 						
                         if (s_location && result.s_location_lat && result.s_location_lng) {
                             //console.log('aa'+s_location+' - '+result.s_location);
                             var myLatlng = new google.maps.LatLng(result.s_location_lat,result.s_location_lng);
@@ -224,6 +261,11 @@ define(function (require) {
                         }
                         
                         var result_x = result.map_objects;
+
+						if(result_x=='[]'){
+							elgg.system_message(elgg.echo('No search resulsts. Please try another location or keyword.'));
+						}
+                        
                         $.each($.parseJSON(result_x), function (item, value) {
                             
                             var myLatlng = new google.maps.LatLng(value.lat,value.lng);
@@ -313,23 +355,15 @@ define(function (require) {
                             });                            
                         }
 						/* mod */
+						
 						google.maps.event.addListener(map,'idle', function() {
 							/* redraw the labels */
-							console.log('redraw labels');							
+							console.log('redraw labels');
 							resetClusters();
 						});
-						function resetClusters() {
-	
-							// clear all lables
-							var markers = oms.getMarkers();
-							$.each(markers,function (i, marker){
-								marker.setLabel("");
-							});
-	
+						function resetClusters() {	
 							var markers = oms.markersNearAnyOtherMarker();
-
 							var ii = 0;
-
 							$.each(markers, function (i, marker) {
 								google.maps.event.trigger(markers[i], 'click');
 								ii++;
