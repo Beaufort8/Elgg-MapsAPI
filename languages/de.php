@@ -124,7 +124,7 @@ $language = array(
     //search 
     'amap_maps_api:search' => 'Suche nach Standort',
     'amap_maps_api:search:keyword' => 'Stichwort',
-    'amap_maps_api:search:location' => 'Standort',
+    'amap_maps_api:search:location' => 'Adresse oder Stadt',
     'amap_maps_api:search:location:select' => 'Standort auswählen',
     'amap_maps_api:search:radius' => 'Radius (Meter)',
     'amap_maps_api:search:radius:meters' => 'Radius (Meter)',
@@ -150,7 +150,9 @@ $language = array(
     'amap_maps_api:search:personalized:radius' => 'Radius der Suche: ',
     'amap_maps_api:search:personalized:empty' => '<h3>Keine Ergebnisse auf der Karte</h3>',
 	'amap_maps_api:search:proximity' => '%2$s km',
-	'amap_maps_api:search_types:proximity' => 'Standort',    
+	'amap_maps_api:search_types:proximity' => 'Standort',
+	'amap_maps_api:search:reset' => 'Zurücksetzen',
+    
     
     // geo 
     'amap_maps_api:settings:proximity_search' => 'Aktivieren Umkreissuche in Elgg Suchergebnisse',

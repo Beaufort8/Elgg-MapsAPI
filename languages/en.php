@@ -124,7 +124,7 @@ $language = array(
     //search 
     'amap_maps_api:search' => 'Search by location',
     'amap_maps_api:search:keyword' => 'keyword',
-    'amap_maps_api:search:location' => 'location',
+    'amap_maps_api:search:location' => 'address or city',
     'amap_maps_api:search:location:select' => 'Select Location',
     'amap_maps_api:search:radius' => 'radius (meters)',
     'amap_maps_api:search:radius:meters' => 'radius (meters)',
@@ -151,7 +151,8 @@ $language = array(
     'amap_maps_api:search:personalized:empty' => '<h3>No results on maps</h3>',
 	'amap_maps_api:search:proximity' => '%2$s km',
 	'amap_maps_api:search_types:proximity' => 'Location',    
-    
+	'amap_maps_api:search:reset' => 'Reset',
+	   
     // geo 
     'amap_maps_api:settings:proximity_search' => 'Enable proximity search in Elgg search results',
     'amap_maps_api:providers:none' => 'Please set up geocoding providers in hypeGeo plugin settings',
