@@ -193,3 +193,7 @@ input.gllpSearchButton	{
 .rangeslider__fill {
 	background: #55d11f !important;
 }
+
+input#reset_btn {
+	margin-left:8px
+}
