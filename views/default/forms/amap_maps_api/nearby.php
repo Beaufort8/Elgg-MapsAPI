@@ -44,7 +44,7 @@ $output .= elgg_view('input/range', array(
 	// 'placeholder' => amap_ma_get_unit_of_measurement_string(AMAP_MA_PLUGIN_ID),	
 	'id' => 's_radius', 
 	'class' => 'elgg-input-range', 
-	'value' => (isset($vars['initial_radius'])?$vars['initial_radius']:''),
+	'value' => (isset($vars['initial_radius'])?$vars['initial_radius']:AMAP_MA_RADIUS_DEFAULT),
     'min'=>'50',
     'max'=>'500',
     'step'=>'50',
@@ -94,6 +94,13 @@ $output .=  elgg_view('input/button', array(
 	'value' => elgg_echo('amap_maps_api:search:submit'),
 	'class' => 'elgg-button elgg-button-submit nearby_btn', 
 	'id' => 'nearby_btn', 
+));
+
+$output .=  elgg_view('input/button', array(
+	'value' => elgg_echo('amap_maps_api:search:reset'),
+	'class' => 'elgg-button elgg-button-cancel',
+	'style' => 'display:none',
+	'id' => 'reset_btn', 
 ));
 $output .= '</div>';
 $output .= '</div>';
