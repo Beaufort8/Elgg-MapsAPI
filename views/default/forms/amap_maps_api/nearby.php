@@ -46,7 +46,7 @@ $output .= elgg_view('input/range', array(
 	'class' => 'elgg-input-range', 
 	'value' => (isset($vars['initial_radius'])?$vars['initial_radius']:AMAP_MA_RADIUS_DEFAULT),
     'min'=>'50',
-    'max'=>'500',
+    'max'=>'700',
     'step'=>'50',
     'data-orientation'=>'horizontal'
 ));
@@ -54,12 +54,13 @@ $output .= '</div>';
 
 $output .= '<label class="mtm float-alt" style="margin-top:20px">';
 $output .= elgg_view('input/checkbox', array('name' => 'showradius', 'value' => 'show', 'id' => 'showradius'));
-$output .= 'Show search area: <span id="output"></span> km&nbsp';
+$output .= elgg_echo('amap_maps_api:search:showradius').': <span id="output"></span> km&nbsp';
 $output .= '</label>';
 
 $output .= '</div>';
 
 $output .= '<div class="nsf_element nsf_small">';
+
 $output .= elgg_view('input/text', array(
     'name' => 's_keyword', 
     'placeholder' => elgg_echo("amap_maps_api:search:keyword"),	
@@ -70,6 +71,7 @@ $output .= elgg_view('input/text', array(
 $output .= '</div>';
 
 $output .= '<div class="nsf_element">';
+
 $output .= elgg_view('input/hidden', array(
 	'name' => 's_action', 
 	'id' => 's_action', 
@@ -95,6 +97,9 @@ $output .=  elgg_view('input/button', array(
 	'class' => 'elgg-button elgg-button-submit nearby_btn', 
 	'id' => 'nearby_btn', 
 ));
+
+$output .= '</div>';
+$output .= '<div class="nsf_element">';
 
 $output .=  elgg_view('input/button', array(
 	'value' => elgg_echo('amap_maps_api:search:reset'),
