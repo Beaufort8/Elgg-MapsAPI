@@ -149,7 +149,8 @@ define(function (require) {
 			for (var i = 0; i < spidered.length; i++) {
 				if(spidered[i].title !== undefined){
 					spidered[i].setOptions({
-						icon: elgg.normalize_url('/mod/membersmap/graphics/green.png')
+						icon: spidered[i].storeicon
+						//icon: elgg.normalize_url('/mod/membersmap/graphics/green.png')
 					});
 				}
 			}
@@ -274,6 +275,7 @@ define(function (require) {
                                 position: myLatlng,
                                 title: value.title,
                                 icon: value.map_icon,
+                                storeicon: value.map_icon,
                                 id: 'marker_'+value.guid
                             });   
 
