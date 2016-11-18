@@ -7,23 +7,23 @@ define(function (require) {
 	// Initialize rangeSlider
 	var $element = $('input[type="range"]');
 	var $output = $('#output');
-     
+
     // Initialize map vars
     var map_settings = require("amap_maps_api/settings");
-    var gm = google.maps;  
+    var gm = google.maps;
     var map;
     var mapTypeIds = [];
-    var markers = []; 	
+    var markers = [];
     var markerBounds = new google.maps.LatLngBounds();
     var mc;
     var circle = new google.maps.Circle();
-    
+
     // retrieve available map layers
     var layer_x = map_settings['layers'];
     $.each($.parseJSON(layer_x), function (item, value) {
-        mapTypeIds.push(value);  
-    });    
-   
+        mapTypeIds.push(value);
+    });
+
     $('#my_location').click(function () {
         if ($('#my_location').is(':checked')) {
             $('#autocomplete').val($('#user_location').val());
@@ -31,17 +31,20 @@ define(function (require) {
             $('#autocomplete').val('');
         }
     });
-    
+
+    // store zoom-level for reset
+    var zl = false;
+
     // store initial load for reset
     var stril = $('#initial_load').val();
-    console.log('Initial Load '+stril);
+    // console.log('Initial Load '+stril);
     // reset initial load to 'newest', if browser-history-back;
     if(!stril){
     	stril='newest';
     	$('#initial_load').val(stril);
     }
 
-    $(document).ready(function () {    	
+    $(document).ready(function () {
 
 		function updateOutput(el, val) {
 		  el.textContent = val;
@@ -67,7 +70,7 @@ define(function (require) {
 				return false;
 			}
 		});
-		
+
 		// reset-button
 
 		$("#reset_btn").click(function(){
@@ -110,13 +113,13 @@ define(function (require) {
             tileSize: new google.maps.Size(256, 256),
             name: "OpenStreetMap",
             maxZoom: 18
-        }));  
-        
+        }));
+
         // trigger the search button for making the initial search
         setTimeout(function() {
             $("#nearby_btn").trigger('click');
         },10);
-        
+
         return false;
     });
 
@@ -128,24 +131,24 @@ define(function (require) {
             }
             markers = [];
             markerBounds = new google.maps.LatLngBounds();
-            
+
             if (map_settings['cluster']) {
                 mc.clearMarkers();
-            }            
+            }
         }
-        
+
         // reset search area, in case it exists
         circle.setMap(null);
-        
+
         var btn_text = $(this).val();
         $(this).prop('value', 'Searching...');
         $(this).css("opacity", 0.7);
-        
-        // Spiderfier feature 
+
+        // Spiderfier feature
         var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true});
 		/* mod */
 		oms.addListener('spiderfy', function(spidered, unspidered) {
-			console.log('spiderfy');
+			// console.log('spiderfy');
 			for (var i = 0; i < spidered.length; i++) {
 				if(spidered[i].title !== undefined){
 					spidered[i].setOptions({
@@ -156,7 +159,7 @@ define(function (require) {
 			}
 		});
 		oms.addListener('unspiderfy', function(spidered, unspidered) {
-			console.log('unspiderfy');
+			// console.log('unspiderfy');
 			for (var i = 0; i < spidered.length; i++) {
 				if(spidered[i].title !== undefined){
 					spidered[i].setOptions({
@@ -165,7 +168,7 @@ define(function (require) {
 				}
 			}
 		});
-		/* /mod */   
+		/* /mod */
         var s_location = $('#autocomplete').val();
         var s_radius = $('#s_radius').val();
         var s_keyword = $('#s_keyword').val();
@@ -190,7 +193,7 @@ define(function (require) {
             initSearchBtn(btn_text);
             return false;
         } else {
-            
+
             elgg.action(s_action, {
                 data: {
                     s_location: s_location,
@@ -198,8 +201,8 @@ define(function (require) {
                     s_keyword: s_keyword,
                     showradius: showradius,
                     initial_load: initial_load,
-                    noofusers: noofusers, 
-                    s_change_title: s_change_title, 
+                    noofusers: noofusers,
+                    s_change_title: s_change_title,
                     group_guid: group_guid
                 },
                 success: function (result) {
@@ -211,22 +214,22 @@ define(function (require) {
                         }
                         $('#map_location').html(result.location);
                         $('#map_radius').html(result.radius);
-                        
+
                         if (s_location) {
                             $('#s_radius').val(result.s_radius);
                         }
                         if (change_title != 0) {
                             $('.elgg-heading-main').html(result.title);
                         }
-                        
+
                         if (initial_load == 'location') {
                             $('#my_location').prop('checked', true);
                         }
- 						
+
  						if(initial_load==''){
  							$('#reset_btn').show();
  						}
- 						
+
                         if (s_location && result.s_location_lat && result.s_location_lng) {
                             //console.log('aa'+s_location+' - '+result.s_location);
                             var myLatlng = new google.maps.LatLng(result.s_location_lat,result.s_location_lng);
@@ -234,18 +237,18 @@ define(function (require) {
                                 map: map,
                                 position: myLatlng,
                                 icon: elgg.normalize_url('/mod/amap_maps_api/graphics/flag.png')
-                            }); 
-                            map.setCenter(marker.getPosition());  
-                           
+                            });
+                            map.setCenter(marker.getPosition());
+
                             google.maps.event.addListener(marker, 'click', function() {
                                 infowindow.setContent('Search address: '+s_location+'<br />Search radius: '+result.s_radius+' '+map_settings['unitmeas']);
                                 infowindow.open(map, this);
-                            });  
+                            });
                             markerBounds.extend(myLatlng);
 
                             oms.addMarker(marker);  // Spiderfier feature
 
-                            markers.push(marker);     
+                            markers.push(marker);
 
                             //console.log('aa'+showradius+' - '+result.s_radius);
                             if (showradius && result.s_radius_no > 0) {
@@ -257,18 +260,18 @@ define(function (require) {
                                 });
                                 // Bind circle and marker
                                 circle.bindTo('center', marker, 'position');
-                                map.fitBounds(circle.getBounds());                            
+                                map.fitBounds(circle.getBounds());
                             }
                         }
-                        
+
                         var result_x = result.map_objects;
 
 						if(result_x=='[]'){
 							elgg.system_message(elgg.echo('No search resulsts. Please try another location or keyword.'));
 						}
-                        
+
                         $.each($.parseJSON(result_x), function (item, value) {
-                            
+
                             var myLatlng = new google.maps.LatLng(value.lat,value.lng);
                             var marker = new google.maps.Marker({
                                 map: map,
@@ -277,24 +280,24 @@ define(function (require) {
                                 icon: value.map_icon,
                                 storeicon: value.map_icon,
                                 id: 'marker_'+value.guid
-                            });   
+                            });
 
                             google.maps.event.addListener(marker, 'click', function() {
                                 infowindow.setContent('<div class="infowindow">'+value.info_window+'</div>');
                                 infowindow.open(map, this);
                             });
- 
-                            
+
+
                             oms.addMarker(marker);  // Spiderfier feature
                             markers.push(marker);
 
                             if (!showradius)    {
                                 markerBounds.extend(myLatlng);
-                                map.fitBounds(markerBounds);                    
-                            }   
-                            
-                        }); 
-                         
+                                map.fitBounds(markerBounds);
+                            }
+
+                        });
+
                         if (map_settings['cluster']) {
                             mcOptions = {
                                 styles: [
@@ -325,14 +328,14 @@ define(function (require) {
                                     }
                                 ],
                                 maxZoom: map_settings['cluster_zoom']
-                            };                    
+                            };
                             //init clusterer with your options
                             mc = new MarkerClusterer(map, markers, mcOptions);
                         }
-                        
+
                         if (result.sidebar) {
                             $('#map_side_entities').html(result.sidebar);
-                            
+
                             $('.map_entity_block').click(function() {
                                 var tmp_attr = $(this).find('a.entity_m');
                                 var object_id = tmp_attr.attr('id');
@@ -342,9 +345,9 @@ define(function (require) {
                                         google.maps.event.trigger(markers[i], 'click');
                                         break;
                                     }
-                                }                                
+                                }
                             });
-                            
+
                             $('.map_entity_block a.entity_m').click(function() {
                                 var object_id = $(this).attr('id');
                                 for (var i = 0; i < markers.length; i++) {
@@ -353,48 +356,59 @@ define(function (require) {
                                         google.maps.event.trigger(markers[i], 'click');
                                         break;
                                     }
-                                }                                
-                            });                            
+                                }
+                            });
                         }
 						/* mod */
-						
+
 						google.maps.event.addListener(map,'idle', function() {
-							/* redraw the labels */
-							console.log('redraw labels');
-							resetClusters();
+
+              var zlact =  map.getZoom();
+
+              if(zl!=zlact) {
+                zl = zlact;
+                /* redraw the labels */
+                // console.log('redraw labels');
+  						  resetClusters();
+              }
+
 						});
-						function resetClusters() {	
+						function resetClusters() {
 							var markers = oms.markersNearAnyOtherMarker();
 							var ii = 0;
+              var si = 0;
 							$.each(markers, function (i, marker) {
 								google.maps.event.trigger(markers[i], 'click');
 								ii++;
 							});
-	
+
 							// close last
 							if(ii){
-								console.log('close last, unspiderfy');
+								// console.log('close last, unspiderfy');
 								infowindow.close(map, markers[(ii-1)]);
 								oms.unspiderfy();
 							}
+              // open recent
+
+
 						}
- 						/* /mod */                    
+ 						/* /mod */
                     }
                 },
                 complete: function () {
                     // bring search button to normal
                     initSearchBtn(btn_text);
-                     
+
                     // set empty the initial input so it will not be used by search form
                     $('#initial_load').val('');
                  }
 
-            });            
+            });
         }
 
         return false;
     });
-    
+
 });
 
 function initSearchBtn(btn_text) {
