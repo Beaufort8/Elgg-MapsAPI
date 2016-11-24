@@ -33,11 +33,10 @@ define(function (require) {
     });
 
     // store zoom-level for reset
-    var zl = false;
+    var zoomlevel = false;
 
     // store initial load for reset
     var stril = $('#initial_load').val();
-    // console.log('Initial Load '+stril);
     // reset initial load to 'newest', if browser-history-back;
     if(!stril){
     	stril='newest';
@@ -148,7 +147,6 @@ define(function (require) {
         var oms = new OverlappingMarkerSpiderfier(map,{markersWontMove: true, markersWontHide: true, keepSpiderfied: true});
 		/* mod */
 		oms.addListener('spiderfy', function(spidered, unspidered) {
-			// console.log('spiderfy');
 			for (var i = 0; i < spidered.length; i++) {
 				if(spidered[i].title !== undefined){
 					spidered[i].setOptions({
@@ -159,7 +157,6 @@ define(function (require) {
 			}
 		});
 		oms.addListener('unspiderfy', function(spidered, unspidered) {
-			// console.log('unspiderfy');
 			for (var i = 0; i < spidered.length; i++) {
 				if(spidered[i].title !== undefined){
 					spidered[i].setOptions({
@@ -168,6 +165,7 @@ define(function (require) {
 				}
 			}
 		});
+		var initialreset = 0;
 		/* /mod */
         var s_location = $('#autocomplete').val();
         var s_radius = $('#s_radius').val();
@@ -209,6 +207,7 @@ define(function (require) {
                     if (result.error) {
                         elgg.register_error(result.msg);
                     } else {
+                    	initialreset = 1;
                         if (result.change_title) {
                             $('.elgg-heading-main').html(result.title);
                         }
@@ -231,7 +230,6 @@ define(function (require) {
  						}
 
                         if (s_location && result.s_location_lat && result.s_location_lng) {
-                            //console.log('aa'+s_location+' - '+result.s_location);
                             var myLatlng = new google.maps.LatLng(result.s_location_lat,result.s_location_lng);
                             var marker = new google.maps.Marker({
                                 map: map,
@@ -245,12 +243,9 @@ define(function (require) {
                                 infowindow.open(map, this);
                             });
                             markerBounds.extend(myLatlng);
-
                             oms.addMarker(marker);  // Spiderfier feature
-
                             markers.push(marker);
-
-                            //console.log('aa'+showradius+' - '+result.s_radius);
+							
                             if (showradius && result.s_radius_no > 0) {
                                 circle = new google.maps.Circle({
                                   map: map,
@@ -360,37 +355,31 @@ define(function (require) {
                             });
                         }
 						/* mod */
-
 						google.maps.event.addListener(map,'idle', function() {
-
-              var zlact =  map.getZoom();
-
-              if(zl!=zlact) {
-                zl = zlact;
-                /* redraw the labels */
-                // console.log('redraw labels');
-  						  resetClusters();
-              }
-
+							// reset initial
+							if(initialreset==1){
+								resetClusters();
+								initialreset = 0;
+							}
+							// reset on zoom
+							var zoomlevelact =  map.getZoom();
+							if(zoomlevel!=zoomlevelact) {
+								zoomlevel = zoomlevelact;
+								resetClusters();
+							}
 						});
 						function resetClusters() {
 							var markers = oms.markersNearAnyOtherMarker();
 							var ii = 0;
-              var si = 0;
 							$.each(markers, function (i, marker) {
 								google.maps.event.trigger(markers[i], 'click');
 								ii++;
 							});
-
 							// close last
 							if(ii){
-								// console.log('close last, unspiderfy');
 								infowindow.close(map, markers[(ii-1)]);
 								oms.unspiderfy();
 							}
-              // open recent
-
-
 						}
  						/* /mod */
                     }
